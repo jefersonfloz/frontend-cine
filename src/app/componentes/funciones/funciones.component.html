@@ -1,0 +1,42 @@
+<div class="d-flex justify-content-center pt-2" style="margin-left: 250px;"> <div class="row justify-content-center">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body" style="text-align: center;">
+          <h4 class="title">Lista de funciones</h4>
+          <div class="title">
+            <button type="button" class="btn btn-primary" routerLink="/add">Agregar Producto</button>
+        </div>
+          <div *ngIf="funciones && funciones.length > 0; else noFuncion">
+            <div class="table-responsive" style="display: flex; justify-content: center;">
+              <table class="table table-striped table-hover" style="width: auto;">
+                <thead class="table-dark">
+                  <tr>
+                    <th>ID Función</th>
+                    <th>ID Pelicula</th>
+                    <th>Tipo Función</th>
+                    <th>Hora Función</th>
+                    <th>Fecha Función</th>
+                    <th>ID Sala</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let funcion of funciones">
+                    <td>{{funcion.idFuncion}}</td>
+                    <td>{{funcion.idPelicula}}</td>
+                    <td>{{funcion.tipoFuncion}}</td>
+                    <td>{{funcion.horaFuncion}}</td>
+                    <td>{{funcion.fechaFuncion}}</td>
+                    <td>{{funcion.idSala}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <ng-template #noFuncion>
+            <p class="text-center text-muted">No hay funciones disponibles.</p>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
