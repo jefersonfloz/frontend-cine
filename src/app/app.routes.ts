@@ -26,4 +26,7 @@ export const routes: Routes = [
     {path:'rre',component:Error404Component},
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: '**', component: ErrorcitoComponent }
+
+
+    
 ];
