@@ -28,20 +28,19 @@ export class FuncionesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {}
 
-  public getAllFunciones(): void {
-    this.funcionesServicio.getFunciones().subscribe((data) => {
-      this.funciones = data;
-      console.log(data);
-    });
-  }
-
-  
   public getPaginatedFunciones(): void {
     const offset = (this.pagina - 1) * this.limite;
     this.funcionesServicio.getFuncionesPaginadas(this.limite, offset).subscribe({
       next: (data) => {
         this.funciones = data.funciones;
+        // Si la cantidad de funciones obtenidas es menor que el límite, desactivamos el botón "Siguiente"
         this.hayMasFunciones = data.funciones.length === this.limite;
+
+        // Si la página actual está vacía después de una eliminación, volvemos a la página anterior
+        if (this.funciones.length === 0 && this.pagina > 1) {
+          this.pagina--;
+          this.getPaginatedFunciones();
+        }
       },
       error: (error) => {
         console.error('Error al obtener funciones paginadas:', error);
@@ -49,7 +48,7 @@ export class FuncionesComponent implements OnInit, OnDestroy {
     });
   }
 
-   // Métodos para cambiar de página
+  // Métodos para cambiar de página
   public siguientePagina(): void {
     if (this.hayMasFunciones) {
       this.pagina++;
@@ -71,6 +70,7 @@ export class FuncionesComponent implements OnInit, OnDestroy {
     }
     this.funcionesServicio.addFuncion(this.nuevaFuncion).subscribe({
       next: () => {
+        // Actualizamos la lista de funciones sin cambiar la página
         this.getPaginatedFunciones();
         this.mostrarAgregar = false;
         this.resetFormulario();
@@ -87,7 +87,6 @@ export class FuncionesComponent implements OnInit, OnDestroy {
     this.editarFuncion = { ...funcion };
     this.mostrarEditar = true;
   }
-  
 
   public updateFuncion(): void {
     this.resetFormulario();
@@ -112,9 +111,10 @@ export class FuncionesComponent implements OnInit, OnDestroy {
     this.nuevaFuncion = { idPelicula: '', tipoFuncion: '', horaFuncion: '', fechaFuncion: '', idSala: '' };
   }
 
-  public deleteFuncion(id: number) {
+  public deleteFuncion(id: number): void {
     this.funcionesServicio.deleteFuncion(id).subscribe({
       next: () => {
+
         this.getPaginatedFunciones();
       },
       error: (error) => {
