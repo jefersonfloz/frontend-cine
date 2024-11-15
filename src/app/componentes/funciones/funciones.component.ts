@@ -16,11 +16,14 @@ export class FuncionesComponent implements OnInit, OnDestroy {
   mostrarEditar: boolean = false;
   editarFuncion: any = { idPelicula: '', tipoFuncion: '', horaFuncion: '', fechaFuncion: '', idSala: '' };
   nuevaFuncion: any = { idPelicula: '', tipoFuncion: '', horaFuncion: '', fechaFuncion: '', idSala: '' };
+  pagina: number = 1;
+  limite: number = 10;
+  hayMasFunciones: boolean = true;
 
   constructor(private funcionesServicio: FuncionesService) {}
 
   ngOnInit(): void {
-    this.getAllFunciones();
+    this.getPaginatedFunciones();
   }
 
   ngOnDestroy(): void {}
@@ -32,6 +35,35 @@ export class FuncionesComponent implements OnInit, OnDestroy {
     });
   }
 
+  
+  public getPaginatedFunciones(): void {
+    const offset = (this.pagina - 1) * this.limite;
+    this.funcionesServicio.getFuncionesPaginadas(this.limite, offset).subscribe({
+      next: (data) => {
+        this.funciones = data.funciones;
+        this.hayMasFunciones = data.funciones.length === this.limite;
+      },
+      error: (error) => {
+        console.error('Error al obtener funciones paginadas:', error);
+      }
+    });
+  }
+
+   // Métodos para cambiar de página
+  public siguientePagina(): void {
+    if (this.hayMasFunciones) {
+      this.pagina++;
+      this.getPaginatedFunciones();
+    }
+  }
+
+  public paginaAnterior(): void {
+    if (this.pagina > 1) {
+      this.pagina--;
+      this.getPaginatedFunciones();
+    }
+  }
+
   public addFuncion(): void {
     if (!this.nuevaFuncion.idPelicula || !this.nuevaFuncion.horaFuncion || !this.nuevaFuncion.fechaFuncion || !this.nuevaFuncion.idSala) {
       alert('Por favor, completa todos los campos requeridos.');
@@ -39,7 +71,7 @@ export class FuncionesComponent implements OnInit, OnDestroy {
     }
     this.funcionesServicio.addFuncion(this.nuevaFuncion).subscribe({
       next: () => {
-        this.getAllFunciones();
+        this.getPaginatedFunciones();
         this.mostrarAgregar = false;
         this.resetFormulario();
       },
@@ -66,7 +98,7 @@ export class FuncionesComponent implements OnInit, OnDestroy {
     
     this.funcionesServicio.updateFuncion(this.editarFuncion.idFuncion, this.editarFuncion).subscribe({
       next: () => {
-        this.getAllFunciones();
+        this.getPaginatedFunciones();
         this.mostrarEditar = false;
         this.resetFormulario();
       },
@@ -83,7 +115,7 @@ export class FuncionesComponent implements OnInit, OnDestroy {
   public deleteFuncion(id: number) {
     this.funcionesServicio.deleteFuncion(id).subscribe({
       next: () => {
-        this.getAllFunciones();
+        this.getPaginatedFunciones();
       },
       error: (error) => {
         const mensajeError = error.error.respuesta || 'Hubo un error al intentar eliminar la función.';
