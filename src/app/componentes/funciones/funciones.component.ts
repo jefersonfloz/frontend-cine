@@ -19,6 +19,11 @@ export class FuncionesComponent implements OnInit, OnDestroy {
   pagina: number = 1;
   limite: number = 10;
   hayMasFunciones: boolean = true;
+  mensajeExito: string = '';
+  mensajeError: string = '';
+  mostrarMensajeExito: boolean = false; 
+  mostrarMensajeError: boolean = false;  
+
 
   constructor(private funcionesServicio: FuncionesService) {}
 
@@ -69,19 +74,25 @@ export class FuncionesComponent implements OnInit, OnDestroy {
       return;
     }
     this.funcionesServicio.addFuncion(this.nuevaFuncion).subscribe({
-      next: () => {
-        // Actualizamos la lista de funciones sin cambiar la página
+      next: (respuesta) => {
         this.getPaginatedFunciones();
         this.mostrarAgregar = false;
+
+        this.mensajeExito = `Función agregada correctamente. ID de la función: ${respuesta.idFuncion}`;
+        this.mostrarMensajeExito = true;  // Muestra el mensaje de éxito
+        setTimeout(() => this.mostrarMensajeExito = false, 5000);  // Oculta el mensaje después de 5 segundos
+
         this.resetFormulario();
       },
       error: (error) => {
-        const mensajeError = error.error.respuesta || 'Hubo un error al intentar agregar la función.';
+        this.mensajeError = error.error.respuesta || 'Hubo un error al intentar agregar la función.';
         console.error('No se pudo agregar la función:', error);
-        alert(mensajeError);
+        this.mostrarMensajeError = true;  // Muestra el mensaje de error
+        setTimeout(() => this.mostrarMensajeError = false, 5000);  // Oculta el mensaje después de 5 segundos
       }
     });
   }
+  
 
   public openEdit(funcion: any): void {
     this.editarFuncion = { ...funcion };
@@ -96,13 +107,19 @@ export class FuncionesComponent implements OnInit, OnDestroy {
     }
     
     this.funcionesServicio.updateFuncion(this.editarFuncion.idFuncion, this.editarFuncion).subscribe({
-      next: () => {
+      next: (respuesta) => {
         this.getPaginatedFunciones();
         this.mostrarEditar = false;
+        this.mensajeExito = `Función actualizada correctamente.`;
+        this.mostrarMensajeExito = true;  // Muestra el mensaje de éxito
+        setTimeout(() => this.mostrarMensajeExito = false, 5000); 
         this.resetFormulario();
       },
       error: (error) => {
-        alert(error.error.respuesta || 'Error al actualizar la función.');
+        this.mensajeError = error.error.respuesta || 'Hubo un error al intentar actualiar la función.';
+        console.error('No se pudo agregar la función:', error);
+        this.mostrarMensajeError = true;  // Muestra el mensaje de error
+        setTimeout(() => this.mostrarMensajeError = false, 5000);
       }
     });
   }
@@ -111,17 +128,25 @@ export class FuncionesComponent implements OnInit, OnDestroy {
     this.nuevaFuncion = { idPelicula: '', tipoFuncion: '', horaFuncion: '', fechaFuncion: '', idSala: '' };
   }
 
-  public deleteFuncion(id: number): void {
+ public deleteFuncion(id: number): void {
     this.funcionesServicio.deleteFuncion(id).subscribe({
-      next: () => {
-
-        this.getPaginatedFunciones();
+      next: (respuesta) => {
+        if (respuesta.respuesta === "Función eliminada correctamente") {
+          const { idFuncion, idPelicula, horaFuncion, fechaFuncion, idSala } = respuesta.funcionEliminada;
+          this.mensajeExito = `Función eliminada correctamente. 
+          ID de la función: ${idFuncion}, Pelicula: ${idPelicula}, Hora: ${horaFuncion}, Fecha: ${fechaFuncion}, Sala: ${idSala}`;
+          this.mostrarMensajeExito = true;  // Muestra el mensaje de éxito
+          setTimeout(() => this.mostrarMensajeExito = false, 5000);  // Oculta el mensaje después de 5 segundos
+          this.getPaginatedFunciones();
+        }
       },
       error: (error) => {
-        const mensajeError = error.error.respuesta || 'Hubo un error al intentar eliminar la función.';
-        console.error('No se pudo eliminar la función:', error);
-        alert(mensajeError);
+        this.mensajeError = error.error.respuesta || 'Hubo un error al intentar eliminar la función.';
+        this.mostrarMensajeError = true;  // Muestra el mensaje de error
+        setTimeout(() => this.mostrarMensajeError = false, 5000);  // Oculta el mensaje después de 5 segundos
       }
     });
   }
+
+  
 }

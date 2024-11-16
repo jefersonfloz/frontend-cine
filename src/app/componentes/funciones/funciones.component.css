@@ -1,4 +1,4 @@
-/* Estilos para el overlay de la modal */
+
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -11,8 +11,7 @@
     align-items: center;
     z-index: 1000; /* Asegura que la ventana esté encima de otros contenidos */
   }
-  
-  /* Estilos para el contenido de la modal */
+
   .modal-content {
     background-color: white;
     padding: 20px;
@@ -21,3 +20,37 @@
     width: 400px; /* Ajusta el tamaño de la ventana modal */
   }
   
+  .modal-alert {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050; /* Asegura que la ventana esté encima de otros contenidos */
+  }
+
+  .alert-content {
+    background-color:rgb(245, 255, 230) ;
+    padding: 40px; 
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 650px; 
+    height: auto; 
+    max-height: 80%; /* Limita la altura al 80% de la pantalla si el contenido es muy largo */
+    overflow-y: auto; 
+  }
+
+  .alert-content-error {
+    background-color: rgb(255, 240, 242);
+    padding: 40px; 
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 650px; 
+    height: auto; 
+    max-height: 80%; /* Limita la altura al 80% de la pantalla si el contenido es muy largo */
+    overflow-y: auto; 
+  }

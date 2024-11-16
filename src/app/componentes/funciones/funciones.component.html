@@ -1,3 +1,4 @@
+
 <div class="d-flex justify-content-center pt-2" style="margin-left: 250px;">
   <div class="row justify-content-center">
     <div class="col-12">
@@ -62,6 +63,7 @@
 <div *ngIf="mostrarAgregar" class="modal-overlay" (click)="mostrarAgregar = false">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <h5 class="text-center">Nueva Función</h5>
+  
     <form (ngSubmit)="addFuncion()">
       <div class="mb-2">
         <input type="text" class="form-control" placeholder="ID Pelicula" [(ngModel)]="nuevaFuncion.idPelicula" name="idPelicula" required>
@@ -87,10 +89,11 @@
 </div>
 
 
-<!-- Ventana para Agregar Función -->
+<!-- Ventana para actualizar Función -->
 <div *ngIf="mostrarEditar" class="modal-overlay" (click)="mostrarEditar = false">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <h5 class="text-center">Editar Función</h5>
+
     <form (ngSubmit)="updateFuncion()">
       <div class="mb-2">
         <input type="text" class="form-control" placeholder="ID Pelicula" [(ngModel)]="editarFuncion.idPelicula" name="idPelicula" required>
@@ -112,5 +115,32 @@
         <button type="button" (click)="mostrarEditar = false" class="btn btn-secondary">Cancelar</button>
       </div>
     </form>
+  </div>
+</div>
+
+
+<!-- Ventana emergente de éxito -->
+<div *ngIf="mostrarMensajeExito" class="modal-alert" role="alert">
+  <div class="alert-content" (click)="$event.stopPropagation()">
+    <div class="d-flex justify-content-center">
+      <strong>¡Éxito!</strong> {{ mensajeExito }}
+    </div>
+    <!-- Botón de cancelar -->
+    <div class="d-flex justify-content-center pt-3">
+      <button type="button" class="btn btn-success" (click)="mostrarMensajeExito = false">Aceptar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Ventana emergente de error -->
+<div *ngIf="mostrarMensajeError" class="modal-alert" role="alert">
+  <div class="alert-content-error" (click)="$event.stopPropagation()">
+    <div class="d-flex justify-content-center">
+      <strong>¡Error!</strong> {{ mensajeError }}
+    </div>
+    <!-- Botón de cancelar -->
+    <div class="d-flex justify-content-center pt-3">
+      <button type="button" class="btn btn-danger" (click)="mostrarMensajeError = false">Aceptar</button>
+    </div>
   </div>
 </div>
